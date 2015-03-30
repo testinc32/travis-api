@@ -34,8 +34,9 @@ module Travis::API::V3
 
     resource :user do
       route '/user'
-      get :current
-      get :find, '/{user.id}'
+      get  :current
+      get  :find, '/{user.id}'
+      post :sync, '/{user.id}/sync'
     end
 
     resource :organization do

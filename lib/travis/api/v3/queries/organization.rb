@@ -6,5 +6,8 @@ module Travis::API::V3
       return Models::Organization.find_by_id(id) if id
       raise WrongParams, 'missing organization.id'.freeze
     end
+
+    def sync
+    end
   end
 end

@@ -32,12 +32,13 @@ module Travis::API::V3
     end
 
     def perform_async(identifier, *args)
-      class_name, queue = @@sidekiq_cache[identifier] ||= [
-        "Travis::Sidekiq::#{identifier.to_s.camelcase}".freeze,
-        identifier.to_s.pluralize.freeze
-      ]
-
-      ::Sidekiq::Client.push('queue'.freeze => queue, 'class'.freeze => class_name, 'args'.freeze => args)
+      Sidekiqs[identifier].perform_async(*args)
+      # class_name, queue = @@sidekiq_cache[identifier] ||= [
+      #   "Travis::Sidekiq::#{identifier.to_s.camelcase}".freeze,
+      #   identifier.to_s.pluralize.freeze
+      # ]
+      #
+      # ::Sidekiq::Client.push('queue'.freeze => queue, 'class'.freeze => class_name, 'args'.freeze => args)
     end
 
     def includes?(key)

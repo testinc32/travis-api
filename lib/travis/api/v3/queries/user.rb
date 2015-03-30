@@ -6,5 +6,8 @@ module Travis::API::V3
       return Models::User.find_by_id(id) if id
       raise WrongParams, 'missing user.id'.freeze
     end
+
+    def sync(user = find)
+    end
   end
 end

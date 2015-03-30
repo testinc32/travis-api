@@ -104,7 +104,11 @@ describe Travis::API::V3::ServiceIndex do
            "find"=>
             [{"@type"=>"template",
               "request_method"=>"GET",
-              "uri_template"=>"#{path}user/{user.id}"}]},
+              "uri_template"=>"#{path}user/{user.id}"}],
+           "sync"=>
+            [{"@type"=>"template",
+              "request_method"=>"POST",
+              "uri_template"=>"#{path}user/{user.id}/sync"}]},
          "attributes"=>["id", "login", "name", "github_id", "is_syncing", "synced_at"]}}
     }
 
