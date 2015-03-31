@@ -1,8 +1,11 @@
 module Travis::API::V3
   class Sidekiq
-    def self.client(value = nil)
-      @client = value if value
-      @client ||= defined?(super) ? super : ::Sidekiq::Client.default
+    def self.client
+      @client ||= ::Sidekiq::Client
+    end
+
+    def self.client=(value)
+      @client = value
     end
 
     attr_accessor :class_name, :queue, :identifier

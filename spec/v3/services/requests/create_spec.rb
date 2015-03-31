@@ -2,20 +2,16 @@ require 'spec_helper'
 
 describe Travis::API::V3::Services::Requests::Create do
   let(:repo) { Travis::API::V3::Models::Repository.where(owner_name: 'svenfuchs', name: 'minimal').first }
-  let(:sidekiq_payload) { JSON.load(Sidekiq::Client.last['args'].last[:payload]).deep_symbolize_keys }
+  let(:sidekiq_requests) { [] }
   before { repo.requests.each(&:delete) }
 
-  before do
-    Travis::Features.stubs(:owner_active?).returns(true)
-    @original_sidekiq = Sidekiq::Client
-    Sidekiq.send(:remove_const, :Client) # to avoid a warning
-    Sidekiq::Client = []
+  let(:sidekiq_payload) do
+    expect(sidekiq_requests).not_to be_empty, 'expected at least one sidekiq request to be sent, none sent'
+    JSON.load(sidekiq_requests.last['args'].last[:payload]).deep_symbolize_keys
   end
 
-  after do
-    Sidekiq.send(:remove_const, :Client) # to avoid a warning
-    Sidekiq::Client = @original_sidekiq
-  end
+  before { Travis::API::V3::Sidekiq.client = sidekiq_requests }
+  after  { Travis::API::V3::Sidekiq.client = nil              }
 
   describe "not authenticated" do
     before  { post("/v3/repo/#{repo.id}/requests")      }
@@ -104,8 +100,8 @@ describe Travis::API::V3::Services::Requests::Create do
       config:     {}
     }}
 
-    example { expect(Sidekiq::Client.last['queue']).to be == 'build_requests'                }
-    example { expect(Sidekiq::Client.last['class']).to be == 'Travis::Sidekiq::BuildRequest' }
+    example { expect(sidekiq_requests.last['queue']).to be == 'build_requests'                }
+    example { expect(sidekiq_requests.last['class']).to be == 'Travis::Sidekiq::BuildRequest' }
 
     describe "setting id has no effect" do
       let(:params) {{ id: 42 }}
