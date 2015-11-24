@@ -12,7 +12,6 @@ module Travis::API::V3
 
     has_one :default_branch,
       foreign_key: [:repository_id, :name],
-      primary_key: [:id,  :default_branch],
       class_name:  'Travis::API::V3::Models::Branch'.freeze
 
     after_initialize do
