@@ -374,10 +374,13 @@ DEPENDENCIES
   stackprof
   travis-amqp!
   travis-api!
-  travis-config (~> 0.1.0)
+  travis-config (~> 0.1.4)
   travis-core!
   travis-sidekiqs!
   travis-support!
   travis-yaml!
   unicorn
   yard-sinatra!
+
+BUNDLED WITH
+   1.12.0.pre.1
